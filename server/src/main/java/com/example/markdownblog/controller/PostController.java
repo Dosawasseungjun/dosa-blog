@@ -77,28 +77,31 @@ public class PostController {
 
     private Map<String, Object> getStructure(File folder) {
         Map<String, Object> result = new HashMap<>();
-        result.put("name", folder.getName());
-        result.put("path", folder.getPath());
-        result.put("type", "directory");
+        try {
+            String folderName = folder.getName();
+            // 폴더명을 UTF-8로 디코딩
+            folderName = new String(folderName.getBytes("ISO-8859-1"), "UTF-8");
+            result.put("name", folderName);
+            result.put("path", folder.getPath());
+            result.put("type", "directory");
 
-        List<Map<String, Object>> children = new ArrayList<>();
-        File[] files = folder.listFiles();
-        
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    children.add(getStructure(file));
-                } else if (file.getName().endsWith(".md")) {
-                    Map<String, Object> fileInfo = new HashMap<>();
-                    fileInfo.put("name", file.getName().replace(".md", ""));
-                    fileInfo.put("path", file.getPath());
-                    fileInfo.put("type", "file");
-                    children.add(fileInfo);
+            List<Map<String, Object>> children = new ArrayList<>();
+            File[] files = folder.listFiles();
+            
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        children.add(getStructure(file));
+                    } else if (file.getName().endsWith(".md")) {
+                        children.add(createFileNode(file));
+                    }
                 }
             }
+            
+            result.put("children", children);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
-        result.put("children", children);
         return result;
     }
 
