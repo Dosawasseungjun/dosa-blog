@@ -24,7 +24,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class PostController {
 
     @Value("${posts.path:posts}")
@@ -68,10 +68,15 @@ public class PostController {
         try {
             File baseFolder = getPostsDirectory();
             Map<String, Object> structure = getStructure(baseFolder);
-            return ResponseEntity.ok(structure);
+            return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Access-Control-Allow-Origin", "*")
+                .body(structure);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "폴더 구조를 가져오는데 실패했습니다.", "details", e.getMessage()));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Access-Control-Allow-Origin", "*")
+                .body(Map.of("error", "폴더 구조를 가져오는데 실패했습니다.", "details", e.getMessage()));
         }
     }
 
@@ -344,7 +349,9 @@ public class PostController {
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin"));
         configuration.setAllowCredentials(false);
+        configuration.setMaxAge(3600L);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
