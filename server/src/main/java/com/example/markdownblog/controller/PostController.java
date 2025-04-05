@@ -349,4 +349,24 @@ public class PostController {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    private Map<String, Object> createFileNode(File file) {
+        Map<String, Object> node = new HashMap<>();
+        try {
+            String fileName = file.getName();
+            // 파일명을 UTF-8로 디코딩
+            fileName = new String(fileName.getBytes("ISO-8859-1"), "UTF-8");
+            node.put("name", fileName.replace(".md", ""));
+            node.put("path", file.getPath());
+            node.put("type", "file");
+            
+            // 파일의 메타데이터 추가
+            BasicFileAttributes attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            node.put("created", DATE_FORMAT.format(new Date(attrs.creationTime().toMillis())));
+            node.put("modified", DATE_FORMAT.format(new Date(attrs.lastModifiedTime().toMillis())));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return node;
+    }
 }
