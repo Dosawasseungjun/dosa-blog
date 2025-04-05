@@ -78,9 +78,7 @@ public class PostController {
     private Map<String, Object> getStructure(File folder) {
         Map<String, Object> result = new HashMap<>();
         try {
-            String folderName = folder.getName();
-            // 폴더명을 UTF-8로 디코딩
-            folderName = new String(folderName.getBytes("UTF-8"), "UTF-8");
+            String folderName = folder.toPath().getFileName().toString();
             result.put("name", folderName);
             result.put("path", folder.getPath());
             result.put("type", "directory");
@@ -356,9 +354,7 @@ public class PostController {
     private Map<String, Object> createFileNode(File file) {
         Map<String, Object> node = new HashMap<>();
         try {
-            String fileName = file.getName();
-            // 파일명을 UTF-8로 디코딩
-            fileName = new String(fileName.getBytes("UTF-8"), "UTF-8");
+            String fileName = file.toPath().getFileName().toString();
             node.put("name", fileName.replace(".md", ""));
             node.put("path", file.getPath());
             node.put("type", "file");
