@@ -78,7 +78,7 @@ public class PostController {
     private Map<String, Object> getStructure(File folder) {
         Map<String, Object> result = new HashMap<>();
         try {
-            String folderName = folder.toPath().getFileName().toString();
+            String folderName = folder.getName();
             result.put("name", folderName);
             result.put("path", folder.getPath());
             result.put("type", "directory");
@@ -354,7 +354,7 @@ public class PostController {
     private Map<String, Object> createFileNode(File file) {
         Map<String, Object> node = new HashMap<>();
         try {
-            String fileName = file.toPath().getFileName().toString();
+            String fileName = file.getName();
             node.put("name", fileName.replace(".md", ""));
             node.put("path", file.getPath());
             node.put("type", "file");
