@@ -1,11 +1,17 @@
 package com.example.markdownblog.controller;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,21 +24,43 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://[프로젝트이름]-[랜덤문자열].railway.app"})
 public class PostController {
 
-    private static final String POSTS_PATH = "posts";
+    @Value("${posts.path:posts}")
+    private String postsPath;
+
     private static final String IMAGES_PATH = "images";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy년 MM월 dd일");
 
     private File getPostsDirectory() throws FileNotFoundException {
         // 개발 환경에서는 src/main/resources/posts를 사용
-        File devDir = new File("src/main/resources/" + POSTS_PATH);
+        File devDir = new File("src/main/resources/" + postsPath);
         if (devDir.exists()) {
             return devDir;
         }
+        
         // 프로덕션 환경에서는 classpath:posts를 사용
-        return ResourceUtils.getFile("classpath:" + POSTS_PATH);
+        Resource resource = new ClassPathResource(postsPath);
+        if (resource.exists()) {
+            try {
+                return resource.getFile();
+            } catch (IOException e) {
+                // 파일 접근에 실패하면 새 디렉토리 생성
+                File prodDir = new File(postsPath);
+                if (!prodDir.exists()) {
+                    prodDir.mkdirs();
+                }
+                return prodDir;
+            }
+        }
+        
+        // 디렉토리가 없으면 생성
+        File prodDir = new File(postsPath);
+        if (!prodDir.exists()) {
+            prodDir.mkdirs();
+        }
+        return prodDir;
     }
 
     @GetMapping("/posts")
@@ -93,7 +121,7 @@ public class PostController {
     @GetMapping("/posts/{category}")
     public ResponseEntity<List<String>> getPostsByCategory(@PathVariable String category) {
         try {
-            File categoryFolder = new ClassPathResource(POSTS_PATH + "/" + category).getFile();
+            File categoryFolder = new ClassPathResource(postsPath + "/" + category).getFile();
             String[] files = categoryFolder.list((file, name) -> name.endsWith(".md"));
 
             List<String> slugs = files != null
@@ -117,7 +145,7 @@ public class PostController {
             String slug = pathParts[pathParts.length - 1];
             
             // 전체 파일 경로 생성
-            String filePath = POSTS_PATH + "/" + path + ".md";
+            String filePath = postsPath + "/" + path + ".md";
             
             // 파일 존재 여부 확인
             File mdFile = null;
@@ -227,7 +255,7 @@ public class PostController {
                     
                     // 상대 경로 계산
                     String relativePath = file.getPath().substring(
-                        file.getPath().indexOf(POSTS_PATH) + POSTS_PATH.length() + 1
+                        file.getPath().indexOf(postsPath) + postsPath.length() + 1
                     ).replace(".md", "");
                     
                     // 파일의 수정 날짜 가져오기
@@ -279,7 +307,7 @@ public class PostController {
                         
                         // 상대 경로 계산
                         String relativePath = file.getPath().substring(
-                            file.getPath().indexOf(POSTS_PATH) + POSTS_PATH.length() + 1
+                            file.getPath().indexOf(postsPath) + postsPath.length() + 1
                         ).replace(".md", "");
                         
                         // 파일의 수정 날짜 가져오기
@@ -307,5 +335,18 @@ public class PostController {
                 }
             }
         }
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://[프로젝트이름]-[랜덤문자열].railway.app"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
