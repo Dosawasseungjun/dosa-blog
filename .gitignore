@@ -1,0 +1,31 @@
+# .gitignore
+# 환경 변수 파일
+.env
+.env.local
+.env.development
+.env.production
+
+# 설정 파일
+src/main/resources/application.properties
+src/main/resources/application-prod.properties
+
+# 빌드 파일
+/target/
+/build/
+/dist/
+/node_modules/
+
+# 로그 파일
+*.log
+logs/
+
+# IDE 설정 파일
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
