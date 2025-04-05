@@ -24,7 +24,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PostController {
 
     @Value("${posts.path:posts}")
@@ -63,7 +63,7 @@ public class PostController {
         return prodDir;
     }
 
-    @GetMapping("/posts")
+    @GetMapping(value = "/posts", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getDirectoryStructure() {
         try {
             File baseFolder = getPostsDirectory();
@@ -71,19 +71,24 @@ public class PostController {
             return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "*")
                 .body(structure);
         } catch (IOException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "폴더 구조를 가져오는데 실패했습니다.");
+            error.put("details", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Access-Control-Allow-Origin", "*")
-                .body(Map.of("error", "폴더 구조를 가져오는데 실패했습니다.", "details", e.getMessage()));
+                .body(error);
         }
     }
 
     private Map<String, Object> getStructure(File folder) {
         Map<String, Object> result = new HashMap<>();
         try {
-            String folderName = folder.getName();
+            String folderName = new String(folder.getName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
             result.put("name", folderName);
             result.put("path", folder.getPath());
             result.put("type", "directory");
@@ -346,10 +351,10 @@ public class PostController {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Methods", "Access-Control-Allow-Headers"));
         configuration.setAllowCredentials(false);
         configuration.setMaxAge(3600L);
         
@@ -361,7 +366,7 @@ public class PostController {
     private Map<String, Object> createFileNode(File file) {
         Map<String, Object> node = new HashMap<>();
         try {
-            String fileName = file.getName();
+            String fileName = new String(file.getName().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
             node.put("name", fileName.replace(".md", ""));
             node.put("path", file.getPath());
             node.put("type", "file");
