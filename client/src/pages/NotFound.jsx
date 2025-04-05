@@ -1,0 +1,22 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import '../styles/not-found.css';
+
+const NotFound = () => {
+  return (
+    <div className="not-found">
+      <div className="not-found-content">
+        <h1 className="animate-fade-in">404</h1>
+        <h2 className="animate-slide-up">페이지를 찾을 수 없습니다</h2>
+        <p className="animate-slide-up">
+          요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
+        </p>
+        <Link to="/" className="home-button animate-bounce-subtle">
+          홈으로 돌아가기
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default NotFound; 

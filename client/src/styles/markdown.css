@@ -1,0 +1,126 @@
+.markdown-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #eaecef;
+  padding-bottom: 0.3rem;
+}
+
+.markdown-content h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 1.8rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-content h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.markdown-content p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.markdown-content ul, .markdown-content ol {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+  list-style-position: outside;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #dfe2e5;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 1.5rem;
+  color: #6a737d;
+}
+
+.markdown-content pre {
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.markdown-content code {
+  font-size: 0.9em;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  margin: 1.5rem 0;
+}
+
+.markdown-content table {
+  margin-bottom: 1.5rem;
+}
+
+/* 링크 스타일 */
+.markdown-content a {
+  color: #0366d6;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.markdown-content a:hover {
+  color: #0056b3;
+  border-bottom: 1px solid #0056b3;
+  background-color: rgba(3, 102, 214, 0.1);
+}
+
+.markdown-content a:active {
+  color: #004085;
+  background-color: rgba(3, 102, 214, 0.2);
+}
+
+/* KaTeX 수학 블록 스타일 */
+.markdown-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1rem 0;
+  margin: 1rem 0;
+}
+
+/* 페이지 제목 스타일 */
+.post-page > h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid #eaecef;
+  color: #2d3748;
+  line-height: 1.2;
+}
+
+/* 작성일 스타일 */
+.post-date {
+  font-size: 1rem;
+  color: #718096;
+  margin-bottom: 2rem;
+  font-style: italic;
+} 
