@@ -1,31 +1,39 @@
-# .gitignore
-# 환경 변수 파일
+# 클라이언트 .gitignore
+cat > client/.gitignore << 'EOF'
+# 의존성
+/node_modules
+/.pnp
+.pnp.js
+
+# 테스트
+/coverage
+
+# 프로덕션 빌드
+/dist
+/build
+
+# 환경 변수
 .env
 .env.local
-.env.development
-.env.production
+.env.development.local
+.env.test.local
+.env.production.local
 
-# 설정 파일
-src/main/resources/application.properties
-src/main/resources/application-prod.properties
+# 로그
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# 빌드 파일
-/target/
-/build/
-/dist/
-/node_modules/
-
-# 로그 파일
-*.log
-logs/
-
-# IDE 설정 파일
-.idea/
-.vscode/
-*.iml
-*.iws
-*.ipr
+# 에디터 설정
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # 시스템 파일
 .DS_Store
 Thumbs.db
+EOF

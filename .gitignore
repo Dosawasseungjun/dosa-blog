@@ -1,0 +1,23 @@
+# 루트 .gitignore
+cat > .gitignore << 'EOF'
+# 환경 변수
+.env
+.env.local
+.env.development
+.env.production
+
+# 로그 파일
+*.log
+logs/
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
+
+# IDE 설정 파일
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+EOF
