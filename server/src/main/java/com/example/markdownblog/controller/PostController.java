@@ -80,7 +80,7 @@ public class PostController {
         try {
             String folderName = folder.getName();
             // 폴더명을 UTF-8로 디코딩
-            folderName = new String(folderName.getBytes("ISO-8859-1"), "UTF-8");
+            folderName = new String(folderName.getBytes("UTF-8"), "UTF-8");
             result.put("name", folderName);
             result.put("path", folder.getPath());
             result.put("type", "directory");
@@ -358,7 +358,7 @@ public class PostController {
         try {
             String fileName = file.getName();
             // 파일명을 UTF-8로 디코딩
-            fileName = new String(fileName.getBytes("ISO-8859-1"), "UTF-8");
+            fileName = new String(fileName.getBytes("UTF-8"), "UTF-8");
             node.put("name", fileName.replace(".md", ""));
             node.put("path", file.getPath());
             node.put("type", "file");
