@@ -21,8 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.nio.charset.Charset;
-import javax.annotation.PostConstruct;
 
 @RestController
 @RequestMapping("/api")
@@ -34,16 +32,6 @@ public class PostController {
 
     private static final String IMAGES_PATH = "images";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy년 MM월 dd일");
-    private static final Charset CHARSET = StandardCharsets.UTF_8;
-
-    // 시스템 인코딩 설정 확인 및 로깅
-    @PostConstruct
-    public void init() {
-        System.out.println("System file.encoding: " + System.getProperty("file.encoding"));
-        System.out.println("Default charset: " + Charset.defaultCharset());
-        System.out.println("LANG: " + System.getenv("LANG"));
-        System.out.println("LC_ALL: " + System.getenv("LC_ALL"));
-    }
 
     private File getPostsDirectory() throws FileNotFoundException {
         // 개발 환경에서는 src/main/resources/posts를 사용
@@ -161,7 +149,7 @@ public class PostController {
     public ResponseEntity<Map<String, String>> getPost(@PathVariable String path) {
         try {
             // URL 디코딩
-            path = java.net.URLDecoder.decode(path, CHARSET.name());
+            path = java.net.URLDecoder.decode(path, StandardCharsets.UTF_8.name());
             
             // 경로에서 마지막 부분을 slug로 사용
             String[] pathParts = path.split("/");
@@ -198,8 +186,7 @@ public class PostController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
             }
             
-            // 명시적으로 UTF-8 인코딩 사용
-            String content = Files.readString(mdFile.toPath(), CHARSET);
+            String content = Files.readString(mdFile.toPath(), StandardCharsets.UTF_8);
             
             // 파일의 수정 날짜 가져오기
             BasicFileAttributes attrs = Files.readAttributes(mdFile.toPath(), BasicFileAttributes.class);
@@ -322,8 +309,7 @@ public class PostController {
                 if (file.isDirectory()) {
                     searchMarkdownFiles(file, query, results);
                 } else if (file.getName().endsWith(".md")) {
-                    // 명시적으로 UTF-8 인코딩 사용
-                    String content = Files.readString(file.toPath(), CHARSET);
+                    String content = Files.readString(file.toPath(), StandardCharsets.UTF_8);
                     String title = file.getName().replace(".md", "");
                     
                     // 제목이나 내용에서 검색어를 찾음
